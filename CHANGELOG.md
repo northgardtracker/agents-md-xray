@@ -2,7 +2,7 @@
 
 All notable public releases of `agents-md-xray`.
 
-## Unreleased
+## v0.1.4
 
 ### Added
 
