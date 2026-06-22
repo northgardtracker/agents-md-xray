@@ -10,7 +10,7 @@ function main(argv: string[]): number {
   const command = argv[2] ?? 'scan';
   if (command === '--help' || command === '-h' || command === '--version') {
     if (command === '--version') {
-      console.log('0.1.3');
+      console.log('0.1.4');
       return 0;
     }
     printHelp();
