@@ -135,8 +135,13 @@ instruction files: AGENTS.md
 
 ### Examples
 
+Curated good and bad instruction file examples live in the [examples gallery](docs/examples/README.md):
+
 - [Good minimal example](docs/examples/good-minimal.md)
-- [Dangerous example](docs/examples/bad-dangerous.md)
+- [Good monorepo example](docs/examples/good-monorepo.md)
+- [Bad bloated example](docs/examples/bad-bloated.md)
+- [Bad dangerous example](docs/examples/bad-dangerous.md)
+- [Why AGENTS.md matters](docs/why-agents-md-matters.md)
 
 ## Documentation
 
@@ -144,7 +149,8 @@ instruction files: AGENTS.md
 - [GitHub Actions usage](docs/github-actions.md)
 - [Release process](docs/release-process.md)
 - [Configuration file design](docs/design/configuration.md)
-- [Examples](docs/examples/README.md)
+- [Examples gallery](docs/examples/README.md)
+- [Why AGENTS.md matters](docs/why-agents-md-matters.md)
 - [Changelog](CHANGELOG.md)
 - [Security policy](SECURITY.md)
 
