@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { scan, resolveFailOn } from '../src/index.js';
 import { renderText, renderJson, renderSarif, shouldFail } from '../src/reporters.js';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 // ── Scanner core ────────────────────────────────────────────────────────────
@@ -324,6 +325,13 @@ describe('CLI integration', () => {
     expect(stdout).toContain('--format');
     expect(stdout).toContain('--fail-on');
     expect(stdout).toContain('--json');
+    expect(exitCode).toBe(0);
+  });
+
+  it('--version matches package.json version', () => {
+    const pkg = JSON.parse(readFileSync(resolve('package.json'), 'utf8'));
+    const { stdout, exitCode } = runCli(['--version']);
+    expect(stdout.trim()).toBe(pkg.version);
     expect(exitCode).toBe(0);
   });
 
