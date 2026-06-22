@@ -29,6 +29,19 @@ npx agents-md-xray scan .
 
 That's it. It auto-discovers `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md`.
 
+## Project Status
+
+`agents-md-xray` is an early v0.1.x, CLI-first release.
+
+- The scanner is static-analysis-only.
+- It reads local files and package metadata, then reports findings.
+- It never executes commands found in scanned files.
+- It does not send telemetry.
+- It does not upload data over the network by default.
+- `npm` and `npx` usage is valid because the package is already published.
+
+Roadmap items listed below are not yet implemented unless explicitly checked off.
+
 ## Features
 
 - 🔍 **Auto-discovery** — Finds all agent instruction files recursively
@@ -107,6 +120,20 @@ instruction files: AGENTS.md
   Instruction file may be too large: This file has about 1200 words.
   Fix: Move long reference material into docs/ and keep AGENTS.md focused on commands, boundaries, and invariants.
 ```
+
+## Security Model
+
+- Scans local files only.
+- Uses deterministic, rule-based checks.
+- Never executes commands found in scanned instruction files.
+- Does not collect telemetry.
+- Does not make network calls or uploads by default.
+- Security reports should follow [SECURITY.md](SECURITY.md).
+
+### Examples
+
+- [Good minimal example](docs/examples/good-minimal.md)
+- [Dangerous example](docs/examples/bad-dangerous.md)
 
 ## Checks
 

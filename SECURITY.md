@@ -37,7 +37,11 @@ and we will not initiate legal action against researchers.
 
 `agents-md-xray` is designed to be safe by default:
 
+- **Local files only**: The scanner reads local files and package metadata only
+- **Deterministic**: Checks are rule-based and do not depend on model calls
 - **No execution**: The scanner never executes commands found in instruction files
-- **Read-only**: Only reads files, never writes to the scanned repository
-- **No network**: No telemetry, no uploads, no external API calls
-- **Local-first**: All analysis happens on your machine
+- **Read-only**: It never writes to the scanned repository
+- **No telemetry**: No telemetry is collected
+- **No network by default**: There are no uploads or external API calls by default
+
+If you believe a security issue exists, please report it through this policy rather than opening a public issue.
