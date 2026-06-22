@@ -135,6 +135,13 @@ instruction files: AGENTS.md
 - [Good minimal example](docs/examples/good-minimal.md)
 - [Dangerous example](docs/examples/bad-dangerous.md)
 
+## Documentation
+
+- [GitHub Actions usage](docs/github-actions.md)
+- [Examples](docs/examples/README.md)
+- [Changelog](CHANGELOG.md)
+- [Security policy](SECURITY.md)
+
 ## Checks
 
 | ID | Severity | What it checks |
