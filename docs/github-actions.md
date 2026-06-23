@@ -103,8 +103,10 @@ Supported values:
 ## GitHub Action wrapper
 
 This repository also ships a **composite GitHub Action** (`action.yml`) that runs
-the published `agents-md-xray` CLI inside a workflow and can optionally post a
-sticky PR summary comment.
+the published `agents-md-xray` npm CLI inside a workflow and can optionally post a
+sticky PR summary comment. Internally the wrapper installs the published package
+into an isolated temporary directory and runs that CLI; it does not rely on `npx`
+for the scan, so package-manager output cannot contaminate the JSON results.
 
 > **Scope of this support**
 >
@@ -136,12 +138,15 @@ sticky PR summary comment.
 
 ### Versioning and reproducibility
 
-The action runs the CLI through `npx agents-md-xray`, which resolves to the
-latest published version at runtime.
+Internally the wrapper installs the published `agents-md-xray` npm package into an
+isolated temporary directory and then runs that installed CLI. Install output is
+deliberately kept separate from the scanner's JSON output, so package-manager
+logs can never be prepended to the results file. The unpinned install resolves to
+the latest published version at runtime.
 
-- `npx agents-md-xray` (or `@latest`) is convenient but **mutable** — a new
-  release can change results between runs.
-- Pinning a version such as `npx agents-md-xray@0.1.4` is **more reproducible**.
+- An unpinned install (equivalent to `agents-md-xray@latest`) is convenient but
+  **mutable** — a new release can change results between runs.
+- Pinning a version such as `agents-md-xray@0.1.4` is **more reproducible**.
 
 Likewise, pin the action itself to a tag (for example
 `northgardtracker/agents-md-xray@v0.1.4`) rather than a moving branch for
