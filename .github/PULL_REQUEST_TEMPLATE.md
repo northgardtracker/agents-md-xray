@@ -1,18 +1,28 @@
-## Description
+<!--
+Every PR must include the Maintainer Packet below.
+PRs that omit it will be sent back for revision.
+-->
 
-Brief description of the changes.
+### What this PR does
 
-## Type of Change
+<!-- One or two sentences. -->
 
-- [ ] Bug fix
-- [ ] New rule
-- [ ] Feature improvement
-- [ ] Documentation update
-- [ ] Refactoring
+### How to verify (operator copy-paste, ≤2 commands + expected output)
 
-## Checklist
+```bash
+# 1.
+# Expected:
+```
 
-- [ ] `pnpm ci` passes (typecheck + test + build)
-- [ ] Tests added for new functionality
-- [ ] Remediation text included for new findings
-- [ ] Documentation updated if needed
+```bash
+# 2.
+# Expected:
+```
+
+### Risks / what could break
+
+<!-- Be honest. If you don't know, say "unknown — please review." -->
+
+### Decision: [ ] merge  [ ] reject — reason:
+
+<!-- The maintainer fills this in. -->

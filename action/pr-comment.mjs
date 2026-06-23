@@ -53,7 +53,7 @@ async function main() {
   const eventName = process.env.GITHUB_EVENT_NAME ?? '';
   if (!PR_EVENTS.has(eventName)) {
     note(
-      `::notice title=agents-md-xray::comment requested but the event is "${eventName || 'unknown'}", ` +
+      `::notice title=Rootmark::comment requested but the event is "${eventName || 'unknown'", ` +
         'not a pull request. Skipping PR comment.',
     );
     return;
@@ -61,13 +61,13 @@ async function main() {
 
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
-    note('::warning title=agents-md-xray::comment requested but no github-token was provided. Skipping PR comment.');
+    note('::warning title=Rootmark::comment requested but no github-token was provided. Skipping PR comment.');
     return;
   }
 
   const resultsPath = process.env.RESULTS_JSON;
   if (!resultsPath) {
-    note('::warning title=agents-md-xray::missing results file path. Skipping PR comment.');
+    note('::warning title=Rootmark::missing results file path. Skipping PR comment.');
     return;
   }
   const result = JSON.parse(readFileSync(resultsPath, 'utf8'));
@@ -79,13 +79,13 @@ async function main() {
     issueNumber = event?.pull_request?.number ?? event?.number;
   }
   if (!issueNumber) {
-    note('::warning title=agents-md-xray::could not determine the pull request number. Skipping PR comment.');
+    note('::warning title=Rootmark::could not determine the pull request number. Skipping PR comment.');
     return;
   }
 
   const [owner, repo] = (process.env.GITHUB_REPOSITORY ?? '').split('/');
   if (!owner || !repo) {
-    note('::warning title=agents-md-xray::GITHUB_REPOSITORY is not set. Skipping PR comment.');
+    note('::warning title=Rootmark::GITHUB_REPOSITORY is not set. Skipping PR comment.');
     return;
   }
 
@@ -99,7 +99,7 @@ async function main() {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'agents-md-xray-action',
+    'User-Agent': 'rootmark-action',
     'Content-Type': 'application/json',
   };
 
@@ -114,7 +114,7 @@ async function main() {
     if (!response.ok) {
       throw new Error(`update comment failed: ${response.status} ${await safeText(response)}`);
     }
-    note(`agents-md-xray: updated existing PR comment (#${existing.id}).`);
+    note(`rootmark: updated existing PR comment (#${existing.id}).`);
   } else {
     const response = await fetch(`${apiUrl}/repos/${owner}/${repo}/issues/${issueNumber}/comments`, {
       method: 'POST',
@@ -124,7 +124,7 @@ async function main() {
     if (!response.ok) {
       throw new Error(`create comment failed: ${response.status} ${await safeText(response)}`);
     }
-    note('agents-md-xray: created PR comment.');
+    note('rootmark: created PR comment.');
   }
 }
 
@@ -132,6 +132,6 @@ main()
   .then(() => process.exit(0))
   .catch((error) => {
     // Best-effort: never fail the job solely because commenting failed.
-    note(`::warning title=agents-md-xray::failed to post PR comment: ${error?.message ?? error}`);
+    note(`::warning title=Rootmark::failed to post PR comment: ${error?.message ?? error}`);
     process.exit(0);
   });

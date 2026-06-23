@@ -1,0 +1,5 @@
+# CODEOWNERS
+# All paths are owned by the maintainer. PRs that touch any file require
+# review from @northgardtracker before merge.
+
+* @northgardtracker

@@ -1,10 +1,18 @@
 # Strategy
 
-The initial wedge is not a generic MCP security gateway. That market is crowded.
+The initial wedge is not a generic MCP security gateway. That market is
+crowded.
 
-The wedge is: make agent instruction files and local agent configuration reviewable in CI.
+The wedge is: ground the Node/npm/pnpm commands written in agent instruction
+files against the repository's actual package metadata, in CI, without
+executing anything.
 
-Phase 1: deterministic AGENTS.md/CLAUDE.md/GEMINI.md linting.
-Phase 2: GitHub Action + SARIF.
-Phase 3: MCP config inventory without executing untrusted commands.
-Phase 4: optional LLM-assisted suggestions using explicit user opt-in.
+Phase 1 (v0.1): grounded verification — extract npm/pnpm commands from
+`AGENTS.md` / `CLAUDE.md` / `GEMINI.md` and check them against
+`package.json` scripts, `packageManager`, lockfiles, and pnpm workspaces.
+Phase 2: GitHub Action polish — composite action, sticky PR summary comment,
+stable CI outputs.
+Phase 3 (later): optional MCP config inventory without executing untrusted
+commands.
+Phase 4 (later, opt-in only): LLM-assisted suggestions behind an explicit
+flag.

@@ -1,6 +1,6 @@
 # Release process and publishing guardrails
 
-This document is for maintainers. It explains how `agents-md-xray` releases are created, what the automation handles, and what must be done manually.
+This document is for maintainers. It explains how `rootmark` releases are created, what the automation handles, and what must be done manually.
 
 ## Overview
 
@@ -11,8 +11,8 @@ Releases are automated through a GitHub Actions workflow (`.github/workflows/rel
 1. **Ensure `main` is green**
    ```bash
    pnpm run ci
-   node dist/cli.js scan .
-   node dist/cli.js scan . --format json
+   node dist/cli.js verify .
+   node dist/cli.js verify . --format json
    ```
 
 2. **Update `package.json` version**
@@ -81,8 +81,8 @@ The workflow (`.github/workflows/release.yml`) performs the following:
 After the workflow finishes, confirm the release is live:
 
 ```bash
-npm view agents-md-xray version
-npx agents-md-xray --version
+npm view rootmark version
+npx rootmark --version
 ```
 
 Check the GitHub Releases page for the generated release notes.

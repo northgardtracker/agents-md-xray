@@ -1,22 +1,26 @@
 # AGENTS.md
 
-Project-level instructions for AI coding agents working on `agents-md-xray`.
+Project-level instructions for AI coding agents working on `rootmark`.
 
 ## Project identity
 
-`agents-md-xray` is a public open-source TypeScript CLI that scans AI coding-agent instruction files for quality, drift, and safety.
+`rootmark` is a public open-source TypeScript CLI that performs grounded
+verification for `AGENTS.md` and other AI-agent instruction files.
 
-It is an agent-instruction linter / agent-readiness scanner, not a generic security platform.
+It is a grounded-verification CLI for the Node.js ecosystem, not a
+generic security platform or prose linter.
 
 Current product scope:
 
-- CLI scanner
+- CLI verifier
 - deterministic static analysis
-- pretty and JSON output
+- pretty, JSON, and SARIF output
 - CI-friendly exit codes
 - tests and documentation
 
-Do not expand the project into a dashboard, MCP gateway, OAuth proxy, SaaS product, enterprise compliance platform, hosted service, or generic security scanner unless explicitly requested.
+Do not expand the project into a dashboard, MCP gateway, OAuth proxy,
+SaaS product, enterprise compliance platform, hosted service, or generic
+security scanner unless explicitly requested.
 
 ## Setup commands
 
@@ -27,8 +31,8 @@ Do not expand the project into a dashboard, MCP gateway, OAuth proxy, SaaS produ
 - Run full validation: `pnpm run ci`
 - Run tests only: `pnpm test`
 - Run typecheck only: `pnpm typecheck`
-- Run local self-scan: `node dist/cli.js scan .`
-- Run JSON self-scan: `node dist/cli.js scan . --format json`
+- Run local self-verify: `node dist/cli.js verify .`
+- Run JSON self-verify: `node dist/cli.js verify . --format json`
 
 ## Execution discipline
 
@@ -37,7 +41,8 @@ Before editing:
 1. Inspect relevant files.
 2. Identify the smallest safe change.
 3. Avoid unrelated refactors.
-4. Do not change package version, tags, release workflow, or publishing settings unless explicitly asked.
+4. Do not change package version, tags, release workflow, or publishing
+   settings unless explicitly asked.
 
 After editing:
 
@@ -51,8 +56,8 @@ For normal code changes, run:
 
 ```bash
 pnpm run ci
-node dist/cli.js scan .
-node dist/cli.js scan . --format json
+node dist/cli.js verify .
+node dist/cli.js verify . --format json
 ```
 
 For CLI behavior changes, also test relevant exit codes.
@@ -60,7 +65,7 @@ For CLI behavior changes, also test relevant exit codes.
 For path or error-handling changes, include:
 
 ```bash
-node dist/cli.js scan ./definitely-not-existing-path
+node dist/cli.js verify ./definitely-not-existing-path
 ```
 
 Expected invalid path behavior:
@@ -71,14 +76,15 @@ Expected invalid path behavior:
 
 ## CI ordering rule
 
-CLI integration tests execute `node dist/cli.js`, so `dist/cli.js` must exist before tests run.
+CLI integration tests execute `node dist/cli.js`, so `dist/cli.js` must
+exist before tests run.
 
 Keep local and GitHub CI order as:
 
 1. typecheck
 2. build
 3. test
-4. self-scan
+4. self-verify
 
 Do not run CLI integration tests before build.
 
@@ -104,14 +110,15 @@ Do not run CLI integration tests before build.
 The public CLI should use:
 
 ```bash
-agents-md-xray scan [root] --format pretty|json
-agents-md-xray scan [root] --json
-agents-md-xray scan [root] --fail-on warning|error|off
+rootmark verify [root] --format pretty|json
+rootmark verify [root] --json
+rootmark verify [root] --fail-on warning|error|off
 ```
 
 Keep `--json` as an alias for `--format json`.
 
-Internal severity names may be `fail`, `warn`, and `info`, but public documentation should prefer `error`, `warning`, and `off`.
+Internal severity names may be `fail`, `warn`, and `info`, but public
+documentation should prefer `error`, `warning`, and `off`.
 
 ## Documentation truthfulness
 
@@ -119,26 +126,31 @@ README and docs must only claim features that are implemented and tested.
 
 Do not claim these as implemented until they actually exist:
 
-* SARIF output
-* GitHub Marketplace Action support
-* PR comments
+* SARIF output as a headline product feature (it is supported via
+  `--format sarif`, but no first-party upload to GitHub Code Scanning
+  ships in v0.1)
+* GitHub Marketplace Action publish
+* PR inline review comments
 * MCP scanning
-* config files
-* auto-fix mode
-* dashboards
-* hosted services
+* Config files
+* Auto-fix mode
+* Dashboards
+* Hosted services
 
 Roadmap mentions are allowed only when clearly marked as not implemented.
+See [ROADMAP.md](ROADMAP.md) and [docs/decisions.md](docs/decisions.md)
+for what is and is not in v0.1.
 
 ## Release guardrails
 
-Do not publish to npm.
+Do not publish this package.
 
 Do not create tags.
 
 Do not create GitHub releases.
 
-Do not modify `NPM_TOKEN`, trusted publishing, or release automation unless explicitly instructed.
+Do not modify `NPM_TOKEN`, trusted publishing, or release automation
+unless explicitly instructed.
 
 ## Near-term priority
 
