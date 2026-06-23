@@ -1,7 +1,7 @@
 # GitHub Actions Usage
 
-`agents-md-xray` can run in GitHub Actions in two ways: by calling the published
-npm package directly (the CLI examples below), or through the repository's
+Rootmark can run in GitHub Actions in two ways: by calling the published npm
+package directly (the CLI examples below), or through the repository's
 composite [GitHub Action wrapper](#github-action-wrapper).
 
 Neither approach is published to the GitHub Marketplace yet. Marketplace
@@ -11,7 +11,7 @@ does not perform automatically.
 ## Minimal workflow
 
 ```yaml
-name: Agents MD X-Ray
+name: Rootmark
 
 on:
   pull_request:
@@ -20,15 +20,15 @@ on:
       - main
 
 jobs:
-  scan-agent-instructions:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run agents-md-xray
-        run: npx agents-md-xray scan .
+      - name: Run rootmark
+        run: npx rootmark verify .
 ```
 
 ## JSON output
@@ -36,21 +36,21 @@ jobs:
 Use JSON output when another CI step or log parser needs structured results.
 
 ```yaml
-name: Agents MD X-Ray JSON
+name: Rootmark JSON
 
 on:
   pull_request:
 
 jobs:
-  scan-agent-instructions:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run agents-md-xray with JSON output
-        run: npx agents-md-xray scan . --format json
+      - name: Run rootmark with JSON output
+        run: npx rootmark verify . --format json
 ```
 
 ## SARIF output
@@ -58,21 +58,21 @@ jobs:
 Use SARIF output to upload findings to GitHub Code Scanning.
 
 ```yaml
-name: Agents MD X-Ray SARIF
+name: Rootmark SARIF
 
 on:
   pull_request:
 
 jobs:
-  scan-agent-instructions:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run agents-md-xray with SARIF output
-        run: npx agents-md-xray scan . --format sarif > results.sarif
+      - name: Run rootmark with SARIF output
+        run: npx rootmark verify . --format sarif > results.sarif
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
@@ -86,12 +86,12 @@ Use `--fail-on` to decide which severity should fail the CI job.
 
 ```yaml
 - name: Fail on errors only
-  run: npx agents-md-xray scan . --fail-on error
+  run: npx rootmark verify . --fail-on error
 ```
 
 ```yaml
 - name: Report only
-  run: npx agents-md-xray scan . --fail-on off
+  run: npx rootmark verify . --fail-on off
 ```
 
 Supported values:
@@ -102,21 +102,22 @@ Supported values:
 
 ## GitHub Action wrapper
 
-This repository also ships a **composite GitHub Action** (`action.yml`) that runs
-the published `agents-md-xray` npm CLI inside a workflow and can optionally post a
-sticky PR summary comment. Internally the wrapper installs the published package
-into an isolated temporary directory and runs that CLI; it does not rely on `npx`
-for the scan, so package-manager output cannot contaminate the JSON results.
+This repository also ships a **composite GitHub Action** (`action.yml`) that
+runs the published `rootmark` npm CLI inside a workflow and can optionally
+post a sticky PR summary comment. Internally the wrapper installs the
+published package into an isolated temporary directory and runs that CLI; it
+does not rely on `npx` for the scan, so package-manager output cannot
+contaminate the JSON results.
 
 > **Scope of this support**
 >
-> - Adding `action.yml` makes the repository *consumable* as an Action once it is
->   released and tagged. It does **not** publish the action to the GitHub
->   Marketplace — that is a separate, manual release step that this repository
->   does not perform automatically.
-> - The PR comment is a **top-level conversation summary comment**, not an inline
->   review comment. Findings are currently file-level and do not carry line
->   numbers, so there is no safe anchor for inline review threads.
+> - Adding `action.yml` makes the repository *consumable* as an Action once it
+>   is released and tagged. It does **not** publish the action to the GitHub
+>   Marketplace — that is a separate, manual release step that this
+>   repository does not perform automatically.
+> - The PR comment is a **top-level conversation summary comment**, not an
+>   inline review comment. Findings are currently file-level and do not carry
+>   line numbers, so there is no safe anchor for inline review threads.
 
 ### Inputs
 
@@ -132,30 +133,30 @@ for the scan, so package-manager output cannot contaminate the JSON results.
 
 | Output | Description |
 |:-------|:------------|
-| `score` | Overall score from 0 to 100. |
+| `score` | Overall score from 0 to 100. (Being deprecated; see [ROADMAP.md](../ROADMAP.md).) |
 | `findings-count` | Total number of findings. |
 | `json-path` | Absolute path to the JSON results file written during the scan. |
 
 ### Versioning and reproducibility
 
-Internally the wrapper installs the published `agents-md-xray` npm package into an
-isolated temporary directory and then runs that installed CLI. Install output is
-deliberately kept separate from the scanner's JSON output, so package-manager
-logs can never be prepended to the results file. The unpinned install resolves to
-the latest published version at runtime.
+Internally the wrapper installs the published `rootmark` npm package into an
+isolated temporary directory and then runs that installed CLI. Install
+output is deliberately kept separate from the scanner's JSON output, so
+package-manager logs can never be prepended to the results file. The
+unpinned install resolves to the latest published version at runtime.
 
-- An unpinned install (equivalent to `agents-md-xray@latest`) is convenient but
+- An unpinned install (equivalent to `rootmark@latest`) is convenient but
   **mutable** — a new release can change results between runs.
-- Pinning a version such as `agents-md-xray@0.1.4` is **more reproducible**.
+- Pinning a version such as `rootmark@0.1.4` is **more reproducible**.
 
 Likewise, pin the action itself to a tag (for example
-`northgardtracker/agents-md-xray@v0.1.4`) rather than a moving branch for
+`northgardtracker/rootmark@v0.1.4`) rather than a moving branch for
 reproducible CI.
 
 ### Example: basic usage
 
 ```yaml
-name: agents-md-xray
+name: rootmark
 
 on:
   pull_request:
@@ -172,11 +173,11 @@ permissions:
   contents: read
 
 jobs:
-  scan:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: northgardtracker/agents-md-xray@v0.1.4
+      - uses: northgardtracker/rootmark@v0.1.4
         with:
           root: .
           fail-on: error
@@ -184,11 +185,12 @@ jobs:
 
 ### Example: PR summary comment
 
-Comment mode posts (and then updates in place) a single top-level PR comment. It
-requires `pull-requests: write` so the token can create and update comments:
+Comment mode posts (and then updates in place) a single top-level PR comment.
+It requires `pull-requests: write` so the token can create and update
+comments:
 
 ```yaml
-name: agents-md-xray
+name: rootmark
 
 on:
   pull_request:
@@ -206,34 +208,35 @@ permissions:
   pull-requests: write
 
 jobs:
-  scan:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: northgardtracker/agents-md-xray@v0.1.4
+      - uses: northgardtracker/rootmark@v0.1.4
         with:
           root: .
           fail-on: warning
           comment: true
 ```
 
-If `comment: true` runs on an event other than `pull_request`, the comment step
-is skipped with a notice; the scan and threshold steps still run.
+If `comment: true` runs on an event other than `pull_request`, the comment
+step is skipped with a notice; the scan and threshold steps still run.
 
 ### Example: warning threshold
 
 ```yaml
-      - uses: northgardtracker/agents-md-xray@v0.1.4
+      - uses: northgardtracker/rootmark@v0.1.4
         with:
           fail-on: warning
 ```
 
 ### Example: report-only mode
 
-Never fail the job — just surface the score, outputs, and (optionally) a comment:
+Never fail the job — just surface the score, outputs, and (optionally) a
+comment:
 
 ```yaml
-      - uses: northgardtracker/agents-md-xray@v0.1.4
+      - uses: northgardtracker/rootmark@v0.1.4
         with:
           fail-on: off
           comment: true
@@ -242,16 +245,16 @@ Never fail the job — just surface the score, outputs, and (optionally) a comme
 ### How failure is decided
 
 The action first collects findings with `--fail-on off`, so it can compute
-outputs and post the comment *before* deciding the job result. It then enforces
-your `fail-on` value from the JSON findings:
+outputs and post the comment *before* deciding the job result. It then
+enforces your `fail-on` value from the JSON findings:
 
 - `error`: fail only on `error`-severity findings.
 - `warning`: fail on `warning`- or `error`-severity findings.
 - `off`: never fail based on findings.
 - Any other value fails the step with a clear configuration error.
 
-Because the failure decision is made from the JSON (not the CLI exit code), the
-PR comment is always posted before the job is allowed to fail.
+Because the failure decision is made from the JSON (not the CLI exit code),
+the PR comment is always posted before the job is allowed to fail.
 
 ## Expected exit codes
 
@@ -266,10 +269,11 @@ PR comment is always posted before the job is allowed to fail.
 - It does not collect telemetry.
 - It does not upload scanned content by default.
 - SARIF output is available via `--format sarif`.
-- GitHub Code Scanning upload is handled by GitHub's `github/codeql-action/upload-sarif` action.
+- GitHub Code Scanning upload is handled by GitHub's
+  `github/codeql-action/upload-sarif` action.
 - A repo-local composite Action wrapper is available via `action.yml`; see
-  [GitHub Action wrapper](#github-action-wrapper). It is not yet published to the
-  GitHub Marketplace.
-- The Action can post a top-level PR summary comment. Inline review comments are
-  not implemented, because findings are file-level and do not include line
-  numbers.
+  [GitHub Action wrapper](#github-action-wrapper). It is not yet published
+  to the GitHub Marketplace.
+- The Action can post a top-level PR summary comment. Inline review comments
+  are not implemented, because findings are file-level and do not include
+  line numbers.

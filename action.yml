@@ -1,9 +1,10 @@
-name: agents-md-xray
+name: rootmark
 description: >-
-  Scan AGENTS.md and coding-agent instruction files for drift and unsafe
-  guidance, with an optional sticky PR summary comment.
-author: agents-md-xray contributors
-
+  Grounded verification for AGENTS.md and AI-agent instructions. Verifies that
+  the Node/npm/pnpm commands written in AGENTS.md-style instruction files
+  match the repository's actual package metadata, without executing anything,
+  with an optional sticky PR summary comment.
+author: Rootmark contributors
 # NOTE: This action metadata lets the repository be consumed as a GitHub Action
 # once it is released and tagged. Publishing to the GitHub Marketplace is a
 # separate, manual release step and is NOT performed by adding this file.
@@ -16,9 +17,9 @@ inputs:
   root:
     description: Root path to scan for instruction files.
     required: false
-    default: '.'
+    default: "."
   fail-on:
-    description: 'Severity threshold that fails the job: error, warning, or off.'
+    description: "Severity threshold that fails the job: error, warning, or off."
     required: false
     default: error
   comment:
@@ -26,7 +27,7 @@ inputs:
       Post or update a sticky, top-level PR summary comment with findings.
       Only applies to pull_request events.
     required: false
-    default: 'false'
+    default: "false"
   github-token:
     description: Token used to post the PR summary comment when comment is true.
     required: false
@@ -34,11 +35,11 @@ inputs:
   node-version:
     description: Node.js version used to run the CLI.
     required: false
-    default: '22'
+    default: "22"
 
 outputs:
   score:
-    description: Overall agents-md-xray score from 0 to 100.
+    description: Overall rootmark score from 0 to 100.
     value: ${{ steps.meta.outputs.score }}
   findings-count:
     description: Total number of findings reported by the scan.
@@ -60,8 +61,8 @@ runs:
       shell: bash
       env:
         ROOT: ${{ inputs.root }}
-        RESULTS_JSON: ${{ runner.temp }}/agents-md-xray-results.json
-        TOOL_DIR: ${{ runner.temp }}/agents-md-xray-tool
+        RESULTS_JSON: ${{ runner.temp }}/rootmark-results.json
+        TOOL_DIR: ${{ runner.temp }}/rootmark-tool
       run: |
         set -euo pipefail
         # Install the published CLI into an isolated temp directory FIRST. This
@@ -73,13 +74,13 @@ runs:
         #
         # The unpinned install resolves to the latest published version
         # (equivalent to @latest): convenient but mutable. Pin a version (e.g.
-        # agents-md-xray@0.1.4) for fully reproducible runs.
+        # rootmark@0.1.4) for fully reproducible runs.
         mkdir -p "$TOOL_DIR"
-        npm --prefix "$TOOL_DIR" install --no-audit --no-fund --loglevel=error agents-md-xray
+        npm --prefix "$TOOL_DIR" install --no-audit --no-fund --loglevel=error rootmark
 
         # Collect findings with --fail-on off so the job can summarize and
         # comment before deciding whether to fail (see the enforce step below).
-        "$TOOL_DIR/node_modules/.bin/agents-md-xray" scan "$ROOT" --format json --fail-on off > "$RESULTS_JSON"
+        "$TOOL_DIR/node_modules/.bin/rootmark" verify "$ROOT" --format json --fail-on off > "$RESULTS_JSON"
         echo "json-path=$RESULTS_JSON" >> "$GITHUB_OUTPUT"
 
     - name: Compute outputs

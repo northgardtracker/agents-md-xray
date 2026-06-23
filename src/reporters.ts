@@ -1,26 +1,32 @@
-import type { ScanResult, Severity } from './types.js';
-import { getRuleMetadata, RULE_METADATA, type RuleMetadata } from './rule-metadata.js';
+import type { ScanResult, Severity } from "./types.js";
+import {
+  getRuleMetadata,
+  RULE_METADATA,
+  type RuleMetadata,
+} from "./rule-metadata.js";
 
 export function renderText(result: ScanResult): string {
   const lines: string[] = [];
-  lines.push(`agents-md-xray score: ${result.score}/100`);
-  lines.push(`instruction files: ${result.files.length ? result.files.join(', ') : 'none'}`);
-  lines.push('');
+  lines.push(`rootmark score: ${result.score}/100`);
+  lines.push(
+    `instruction files: ${result.files.length ? result.files.join(", ") : "none"}`,
+  );
+  lines.push("");
 
   if (result.findings.length === 0) {
-    lines.push('No findings.');
-    return lines.join('\n');
+    lines.push("No findings.");
+    return lines.join("\n");
   }
 
   for (const finding of result.findings) {
-    const location = finding.file ? ` (${finding.file})` : '';
+    const location = finding.file ? ` (${finding.file})` : "";
     lines.push(`[${finding.severity.toUpperCase()}] ${finding.id}${location}`);
     lines.push(`  ${finding.title}: ${finding.message}`);
     if (finding.evidence) lines.push(`  Evidence: ${finding.evidence}`);
     if (finding.remediation) lines.push(`  Fix: ${finding.remediation}`);
-    lines.push('');
+    lines.push("");
   }
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 export function renderJson(result: ScanResult): string {
@@ -29,15 +35,18 @@ export function renderJson(result: ScanResult): string {
 
 function severityToSarifLevel(severity: Severity): string {
   switch (severity) {
-    case 'fail': return 'error';
-    case 'warn': return 'warning';
-    case 'info': return 'note';
+    case "fail":
+      return "error";
+    case "warn":
+      return "warning";
+    case "info":
+      return "note";
   }
 }
 
 export function renderSarif(result: ScanResult): string {
-  const SARIF_VERSION = '2.1.0';
-  const SARIF_SCHEMA = 'https://json.schemastore.org/sarif-2.1.0.json';
+  const SARIF_VERSION = "2.1.0";
+  const SARIF_SCHEMA = "https://json.schemastore.org/sarif-2.1.0.json";
 
   // Emit the full stable rule catalog so clean scans still describe every
   // known rule. Any finding rule IDs that are not in the catalog get a
@@ -60,7 +69,7 @@ export function renderSarif(result: ScanResult): string {
     } else if (result.files.length > 0) {
       uri = result.files[0];
     } else {
-      uri = 'AGENTS.md';
+      uri = "AGENTS.md";
     }
 
     return {
@@ -84,8 +93,8 @@ export function renderSarif(result: ScanResult): string {
       {
         tool: {
           driver: {
-            name: 'agents-md-xray',
-            informationUri: 'https://github.com/northgardtracker/agents-md-xray',
+            name: "rootmark",
+            informationUri: "https://github.com/northgardtracker/rootmark",
             rules,
           },
         },
@@ -97,8 +106,11 @@ export function renderSarif(result: ScanResult): string {
   return JSON.stringify(sarif, null, 2);
 }
 
-export function shouldFail(result: ScanResult, failOn: Severity | 'off'): boolean {
-  if (failOn === 'off') return false;
+export function shouldFail(
+  result: ScanResult,
+  failOn: Severity | "off",
+): boolean {
+  if (failOn === "off") return false;
   const order: Record<Severity, number> = { info: 1, warn: 2, fail: 3 };
   return result.findings.some((f) => order[f.severity] >= order[failOn]);
 }

@@ -2,7 +2,7 @@
 
 This directory contains curated examples of agent instruction files. Each example is a **synthetic** `.md` file, not an `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, or `.github/copilot-instructions.md` that the scanner would auto-discover. They live in `docs/examples/` so they can illustrate patterns without being treated as live repo instructions.
 
-If you want to test the scanner against a real instruction file, copy an example to `AGENTS.md` at the root of a throwaway repo and run `agents-md-xray scan .`.
+If you want to test the scanner against a real instruction file, copy an example to `AGENTS.md` at the root of a throwaway repo and run `rootmark verify .`.
 
 ## Gallery
 
@@ -20,7 +20,7 @@ The scanner walks the working tree and only inspects files with instruction-file
 To verify, run the scanner against this repo and confirm that no file under `docs/examples/` appears in the output:
 
 ```bash
-node dist/cli.js scan .
+node dist/cli.js verify .
 ```
 
 The reported `instruction files:` line should list only `AGENTS.md` (or equivalent real instruction files at the repo root).
@@ -38,10 +38,10 @@ Each example is paired with the scanner rules it illustrates. The goal is not to
 
 These are roadmap items, not implemented in the current CLI:
 
-- Nested `AGENTS.md` conflict detection — [issue #3](https://github.com/northgardtracker/agents-md-xray/issues/3).
-- MCP config scanning — [issue #4](https://github.com/northgardtracker/agents-md-xray/issues/4).
-- Auto-fix mode — [issue #5](https://github.com/northgardtracker/agents-md-xray/issues/5).
-- GitHub Action PR comments — [issue #2](https://github.com/northgardtracker/agents-md-xray/issues/2).
+- Nested `AGENTS.md` conflict detection — [issue #3](https://github.com/northgardtracker/rootmark/issues/3).
+- MCP config scanning — [issue #4](https://github.com/northgardtracker/rootmark/issues/4).
+- Auto-fix mode — [issue #5](https://github.com/northgardtracker/rootmark/issues/5).
+- GitHub Action PR comments — [issue #2](https://github.com/northgardtracker/rootmark/issues/2).
 - Hosted dashboards, telemetry, or a configuration file — out of scope by design.
 
 The gallery documents only behavior implemented in the current CLI.

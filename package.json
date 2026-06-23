@@ -1,15 +1,19 @@
 {
-  "name": "agents-md-xray",
+  "name": "rootmark",
   "version": "0.1.4",
-  "description": "CLI and CI checker for AGENTS.md quality, drift, and agent instruction safety.",
+  "description": "Rootmark — Grounded verification for AGENTS.md and AI-agent instructions. Verifies that the Node/npm/pnpm commands written in AGENTS.md-style instruction files match the repository's actual package metadata, without executing anything.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/northgardtracker/agents-md-xray"
+    "url": "https://github.com/northgardtracker/rootmark"
+  },
+  "homepage": "https://github.com/northgardtracker/rootmark#readme",
+  "bugs": {
+    "url": "https://github.com/northgardtracker/rootmark/issues"
   },
   "type": "module",
   "packageManager": "pnpm@10.29.3",
   "bin": {
-    "agents-md-xray": "dist/cli.js"
+    "rootmark": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -26,6 +30,7 @@
     "ci": "pnpm typecheck && pnpm build && pnpm test"
   },
   "keywords": [
+    "rootmark",
     "agents-md",
     "AGENTS.md",
     "codex",
@@ -33,9 +38,10 @@
     "coding-agents",
     "github-action",
     "developer-tools",
-    "agent-instructions"
+    "agent-instructions",
+    "grounded-verification"
   ],
-  "author": "",
+  "author": "Rootmark contributors",
   "license": "MIT",
   "engines": {
     "node": ">=20"

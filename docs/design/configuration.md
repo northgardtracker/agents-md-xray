@@ -4,7 +4,7 @@ Status: design only. Configuration file support is not implemented yet.
 
 ## Summary
 
-This document describes a future configuration file format for `agents-md-xray`.
+This document describes a future configuration file format for `rootmark`.
 
 The goal is to let projects tune rule thresholds and override rule severity without changing the scanner source code, while preserving the existing zero-config default behavior.
 
@@ -24,7 +24,7 @@ This design does not implement:
 
 ## Current scanner model
 
-`agents-md-xray` currently runs all checks with hardcoded thresholds.
+`rootmark` currently runs all checks with hardcoded thresholds.
 
 Current behavior:
 
@@ -61,7 +61,7 @@ Current rule IDs are stable:
 
 ## Proposed config file
 
-Use a small JSON file named `agents-md-xray.config.json` at the scan root.
+Use a small JSON file named `rootmark.config.json` at the scan root.
 
 ### Rationale
 
@@ -143,8 +143,8 @@ These would only be honored if the implementation adds glob support. Until then,
 Future SARIF support may already extend `--format`. Config should extend the CLI with `--config`:
 
 ```bash
-agents-md-xray scan .
-agents-md-xray scan . --config agents-md-xray.config.json
+rootmark verify .
+rootmark verify . --config rootmark.config.json
 ```
 
 ### Proposed behavior

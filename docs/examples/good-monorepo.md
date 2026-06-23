@@ -35,4 +35,4 @@ This is a **synthetic** example of an `AGENTS.md` for a pnpm workspace with mult
 
 - Each package may add its own `AGENTS.md` for package-specific commands and boundaries.
 - Nested files should only add detail, not contradict root rules.
-- Inheritance and conflict detection across nested files is a [roadmap item](https://github.com/northgardtracker/agents-md-xray/issues/3) for the scanner, not yet implemented.
+- Inheritance and conflict detection across nested files is a [roadmap item](https://github.com/northgardtracker/rootmark/issues/3) for the scanner, not yet implemented.

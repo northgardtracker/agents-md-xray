@@ -1,0 +1,132 @@
+# Decisions log
+
+This document records the design and product decisions that shape Rootmark.
+Each entry explains the decision, the reasoning, and what was accepted or
+rejected along the way.
+
+## Why v0.1 is static grounding, not command execution or security scanning
+
+**Decision:** Rootmark v0.1 is a static analyzer. It grounds commands
+written in `AGENTS.md`-style instruction files against the repository's
+actual package metadata. It does not execute those commands, and it does
+not position itself as a security scanner.
+
+**Reasoning:**
+
+- **Execution = arbitrary code execution risk.** If Rootmark ran the
+  commands it found, it would be an arbitrary code execution engine for
+  whatever an instruction file happened to say. That is a non-starter for
+  a tool whose own marketing is about safe agent instructions — a
+  "trustworthy agent-instruction tool" that itself runs untrusted code is
+  a contradiction.
+- **Security claims = overclaim.** Calling Rootmark a "security scanner"
+  invites users to trust it for things it cannot do. It does not detect
+  CVEs, it does not audit dependencies, it does not do SAST, and it does
+  not guarantee that an AI agent will behave safely after reading a
+  grounded instruction file. Claiming otherwise would mislead users and
+  create liability for the project.
+- **Static grounding = trustworthy, deterministic, zero-false-positive
+  goal.** Comparing the commands written in an instruction file against
+  `package.json` scripts, `packageManager`, lockfiles, and pnpm
+  workspaces is a closed-world, deterministic check. The answer is either
+  *the script exists*, *the script does not exist*, or *we cannot tell
+  because no `package.json` was found*. That maps cleanly to the
+  three-state model (`verified`, `missing`, `cannot_verify`) and gives
+  maintainers a maintainable signal without false confidence.
+
+**What we accepted:**
+
+- The tool is narrower than some users want. People will ask for "real"
+  command execution, MCP scanning, CVE checks, etc. Those are real
+  problems; they are also out of scope for v0.1 by design.
+- The legacy "0–100 score" is still emitted during the v0.1.x
+  refactor and is being deprecated. Removing it now would be a behaviour
+  change on top of a rename.
+
+## Why Rootmark, and why we accepted practical namespace cleanliness over perfect .com ownership
+
+**Decision:** The product is named **Rootmark**, with the npm package
+`rootmark`, the GitHub repository `northgardtracker/rootmark`, and the
+CLI command `rootmark verify`.
+
+**Reasoning:**
+
+- **The npm name was free.** `rootmark` was available on the npm
+  registry when we checked. That meant we could publish a package named
+  `rootmark` without colliding with an existing CLI, library, or
+  publisher. For an open-source CLI, an unclaimed npm name is the
+  single most important namespace signal.
+- **The repo name was usable.** `northgardtracker/rootmark` is available
+  on GitHub and does not collide with the current owner of any repo
+  under that path.
+- **No CLI collision for end users.** There is no widely-used OSS CLI
+  called `rootmark` that users would confuse this with.
+- **The .com and the GitHub org are taken by unrelated parties.**
+  `rootmark.com` is already registered by another organization, and
+  `rootmark` as a GitHub organisation name is also taken by an unrelated
+  party. Pursuing either of those would have required either negotiating
+  with third parties or pivoting the name.
+
+**What we accepted:**
+
+- The marketing site for `rootmark.com` cannot be owned by this project
+  in the near term. Documentation lives on GitHub Pages / the repo
+  README instead.
+- The GitHub organisation name is not `rootmark`; the project lives under
+  the maintainer's existing personal or org namespace
+  (`northgardtracker/rootmark`). A future transfer to a dedicated org is
+  possible but not required for v0.1.
+- The name is "good enough" rather than "perfect." It is short,
+  pronounceable, fits the "grounded verification" thesis, and does not
+  collide with anything the project actually depends on. That is the
+  bar we set for v0.1.
+
+If a future rename is warranted (for example, to align with a project
+that does own the matching .com), the migration cost is concentrated in
+the CLI binary name, the npm package name, and the GitHub repo path —
+all of which are well-understood rename operations.
+
+## Known issue: `rootmark verify . --help` does not print help
+
+**Decision:** Document this as a known issue and defer the fix to PR1.
+Do not patch it in PR0.
+
+**Symptom:**
+
+- `rootmark --help` and `rootmark verify --help` correctly print the CLI
+  usage block and exit `0`.
+- `rootmark verify . --help` does **not** print help. The CLI treats the
+  extra `--help` flag as an unknown option and proceeds to run the verify
+  subcommand against `.`, returning whatever exit code the scan would
+  normally produce (typically `0` on a clean repo, `1` on findings).
+
+**Root cause:**
+
+The CLI's argument parser checks `argv[2]` for the subcommand and only
+inspects `argv[2]` for `--help` / `-h` / `--version` at the top level.
+Once `argv[2]` is a real subcommand (`verify`), the parser skips the
+top-level help short-circuit and falls through to the normal scan path,
+where `--help` is not a recognized flag and is therefore ignored.
+
+**Why we are not fixing it in PR0:**
+
+PR0 is rename + reposition + governance only. Changing how flags are
+parsed after the subcommand is a CLI behaviour change, which the PR0
+scope explicitly excludes.
+
+**Planned fix (PR1):**
+
+Normalize the argument parser so `--help` (and `-h`) is recognized after
+any subcommand. The fix should:
+
+1. Detect `--help` / `-h` anywhere in `argv` and print the usage block,
+   regardless of whether a subcommand is present.
+2. Keep the existing top-level `rootmark --help` behaviour identical so
+   no test churns.
+3. Add a CLI integration test that pins the new behaviour:
+   `rootmark verify . --help` must print the usage block and exit `0`,
+   without running the scan.
+
+Until PR1 lands, users who want help after the subcommand should run
+`rootmark --help` or `rootmark verify --help` instead of passing a root
+path before `--help`.

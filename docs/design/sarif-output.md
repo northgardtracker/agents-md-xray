@@ -4,7 +4,7 @@ Status: initial implementation completed. SARIF output is available via `--forma
 
 ## Summary
 
-This document describes a future SARIF output mode for `agents-md-xray`.
+This document describes a future SARIF output mode for `rootmark`.
 
 The goal is to let CI systems and code scanning tools consume scanner findings in a standard JSON-based format while preserving the current static-analysis-only safety model.
 
@@ -22,7 +22,7 @@ This design does not implement:
 
 ## Current scanner model
 
-`agents-md-xray` currently reports deterministic findings from local files.
+`rootmark` currently reports deterministic findings from local files.
 
 Current behavior:
 
@@ -38,7 +38,7 @@ Current behavior:
 Future SARIF support should extend the existing `--format` flag:
 
 ```bash
-agents-md-xray scan . --format sarif
+rootmark verify . --format sarif
 ```
 
 The existing JSON format should remain unchanged.
@@ -190,8 +190,8 @@ The SARIF run should include basic tool metadata:
 {
   "tool": {
     "driver": {
-      "name": "agents-md-xray",
-      "informationUri": "https://github.com/northgardtracker/agents-md-xray",
+      "name": "rootmark",
+      "informationUri": "https://github.com/northgardtracker/rootmark",
       "rules": []
     }
   }

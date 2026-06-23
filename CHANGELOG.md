@@ -1,6 +1,11 @@
 # Changelog
 
-All notable public releases of `agents-md-xray`.
+All notable public releases of `rootmark`.
+
+## [Unreleased]
+
+Rename project to Rootmark; reposition to grounded verification; begin
+deprecating prose-quality/score and security-style framing.
 
 ## v0.1.4
 
@@ -10,7 +15,12 @@ All notable public releases of `agents-md-xray`.
 - Severity mapping: `fail` → `error`, `warn` → `warning`, `info` → `note`.
 - Rule descriptors and result locations mapped to SARIF spec.
 - GitHub Actions usage docs updated with SARIF upload example.
-- Stable full SARIF rule descriptor catalog emitted from a centralized rule metadata source, so clean scans still describe every known rule.
+- Stable full SARIF rule descriptor catalog emitted from a centralized rule
+  metadata source, so clean scans still describe every known rule.
+
+> Note: this release was published under the previous name
+> `agents-md-xray`. The package metadata, CLI binary, and registry URL
+> changed in the next release under the new name `rootmark`.
 
 ## v0.1.3
 
@@ -18,7 +28,7 @@ First published CLI-first release.
 
 ### Highlights
 
-- Published `agents-md-xray` to npm.
+- Published the initial CLI-first package to npm.
 - Added CLI support for `--format pretty|json`, `--json`, `--fail-on warning|error|off`, and `--version`.
 - Improved release workflow safety by skipping npm publish when the package version already exists.
 - Clarified project status and security model in public docs.
